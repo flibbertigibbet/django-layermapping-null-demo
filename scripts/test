@@ -1,0 +1,37 @@
+#!/bin/bash
+
+set -e
+
+function usage() {
+    echo -n \
+         "Usage: $(basename "$0")
+
+Run python tests and linter.
+"
+}
+
+if [ "${BASH_SOURCE[0]}" = "${0}" ]
+then
+    if [ "${1:-}" = "--help" ]
+    then
+        usage
+    else
+        docker-compose up -d database django
+
+        # Django tests
+        echo "Running tests"
+        docker-compose \
+            run --rm --entrypoint python \
+            django manage.py test
+        echo "Tests complete"
+
+        # Django linting
+        echo "Running linter"
+        docker-compose \
+            run --rm --entrypoint flake8 django
+        echo "Linting complete"
+
+        docker-compose kill django \
+            && docker-compose rm -f django
+    fi
+fi
