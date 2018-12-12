@@ -1,7 +1,9 @@
-Django==1.11
+-e git+git://github.com/flibbertigibbet/django.git@feature/add-null-layermapping-support#egg=Django
+gunicorn
+psycopg2 --no-binary psycopg2
+gevent
 django-extensions
 psycopg2-binary
-factory-boy
 flake8
 ipdb
 ipython
