@@ -22,7 +22,7 @@ class ImportShapefileTestCase(TestCase):
         self.assertEqual(3, DemoGeoModel.objects.all().count())
         self.assertEqual(1, DemoGeoModel.objects.filter(name='Philadelphia').count())
 
-    def test_shapefile_command_recognized_nulls(self):
+    def test_shapefile_command_recognized_null_number(self):
         # Should have three objects: one has 0, another a truthy value, and the third is null
         self.assertEqual(1, DemoGeoModel.objects.filter(some_number__isnull=True).count(),
                          'Should have one DemoGeoModel with a null some_number')
@@ -30,3 +30,10 @@ class ImportShapefileTestCase(TestCase):
                          'Should have one DemoGeoModel with a some_number value > 0')
         self.assertEqual(1, DemoGeoModel.objects.filter(some_number=0).count(),
                          'Should have one DemoGeoModel with a zero some_number')
+
+    def test_shapefile_command_recognized_null_string(self):
+        self.assertEqual(1, DemoGeoModel.objects.filter(name__isnull=True).count(),
+                         'Should have one DemoGeoModel with a null name')
+        self.assertEqual(1, DemoGeoModel.objects.filter(name__isnull=True,
+                                                        some_number__isnull=True).count(),
+                         'Should have one DemoGeoModel with both null name and null some_number')
