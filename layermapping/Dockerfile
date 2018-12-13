@@ -1,7 +1,6 @@
-FROM python:3.6-slim-stretch
+FROM ubuntu:bionic
 
 ENV PG_MAJOR 10
-ENV PG_VERSION 10.6-1.pgdg90+1
 
 RUN set -ex; \
   if ! command -v gpg > /dev/null; then \
@@ -25,7 +24,7 @@ RUN set -ex; \
 	rm -rf "$GNUPGHOME"; \
 	apt-key list
 
-RUN echo "deb http://apt.postgresql.org/pub/repos/apt/ stretch-pgdg main $PG_MAJOR" > /etc/apt/sources.list.d/pgdg.list
+RUN echo "deb http://apt.postgresql.org/pub/repos/apt/ bionic-pgdg main $PG_MAJOR" > /etc/apt/sources.list.d/pgdg.list
 
 RUN set -ex; \
     apt-get update; \
@@ -37,12 +36,12 @@ RUN set -ex; \
       gdal-bin \
       gettext \
       postgis \
-      postgresql-client-$PG_MAJOR=$PG_VERSION \
+      postgresql-client-$PG_MAJOR \
+      python-dev \
+      python-pip \
+      python-setuptools \
     ; \
     rm -rf /var/lib/apt/lists/*;
-
-RUN set -ex; \
-    pip install --upgrade pip
 
 COPY requirements.txt /tmp
 RUN set -ex \
@@ -54,6 +53,9 @@ RUN set -ex \
         --force-reinstall -U --no-clean --src /usr/local/src \
         --user \
         -e git+git://github.com/flibbertigibbet/django.git@feature/add-null-layermapping-support#egg=Django
+
+RUN set -ex \
+    && pip install --no-cache-dir -r /usr/local/src/django/tests/requirements/py2.txt
 
 RUN mkdir -p /usr/src
 COPY ./ /usr/src
