@@ -32,6 +32,7 @@ RUN set -ex; \
     apt-get install -y --no-install-recommends \
       build-essential \
       libpq-dev \
+      enchant \
       git \
       gdal-bin \
       gettext \
