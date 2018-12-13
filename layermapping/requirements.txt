@@ -1,9 +1,9 @@
 gunicorn
-psycopg2 --no-binary psycopg2
+psycopg2-binary
 gevent
 django-extensions
-psycopg2-binary
 flake8
 ipdb
 ipython
+tblib
 tox

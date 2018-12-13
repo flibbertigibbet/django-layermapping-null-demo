@@ -20,7 +20,7 @@ DATABASES = {
     },
     'other': {
         'ENGINE': 'django.contrib.gis.db.backends.postgis',
-        'NAME': 'layermapping',
+        'NAME': 'other',
         'USER': 'layermapping',
         'PASSWORD': 'layermapping',
         'HOST': 'database.service.layermapping.internal',
@@ -28,4 +28,9 @@ DATABASES = {
     },
 }
 
-SECRET_KEY = 'JUST_WORK_ALREADY'
+SECRET_KEY = 'WHY_DO_TESTS_NEED_A_SECRET_KEY'
+
+# Use a fast hasher to speed up tests.
+PASSWORD_HASHERS = [
+    'django.contrib.auth.hashers.MD5PasswordHasher',
+]
