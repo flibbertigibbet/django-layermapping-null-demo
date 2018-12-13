@@ -3,23 +3,14 @@ FROM python:3.6-slim-stretch
 ENV PG_MAJOR 10
 ENV PG_VERSION 10.6-1.pgdg90+1
 
-RUN mkdir -p /usr/src
-WORKDIR /usr/src
-
-COPY ./layermapping/ /usr/src
-
-COPY requirements.txt /tmp
-
 RUN set -ex; \
-	if ! command -v gpg > /dev/null; then \
-		apt-get update; \
-		apt-get install -y --no-install-recommends \
-      git \
-			gnupg \
-			dirmngr \
-		; \
-		rm -rf /var/lib/apt/lists/*; \
-	fi
+  if ! command -v gpg > /dev/null; then \
+    apt-get update; \
+    apt-get install -y --no-install-recommends \
+      dirmngr \
+      gnupg \
+    ; \
+  fi
 
 RUN set -ex; \
 # pub   4096R/ACCC4CF8 2011-10-13 [expires: 2019-07-02]
@@ -36,23 +27,37 @@ RUN set -ex; \
 
 RUN echo "deb http://apt.postgresql.org/pub/repos/apt/ stretch-pgdg main $PG_MAJOR" > /etc/apt/sources.list.d/pgdg.list
 
+RUN set -ex; \
+    apt-get update; \
+    apt-get install -y --no-install-recommends \
+      build-essential \
+      libpq-dev \
+      git \
+      gdal-bin \
+      gettext \
+      postgis \
+      postgresql-client-$PG_MAJOR=$PG_VERSION \
+    ; \
+    rm -rf /var/lib/apt/lists/*;
+
+RUN set -ex; \
+    pip install --upgrade pip
+
+COPY requirements.txt /tmp
 RUN set -ex \
-    && buildDeps=" \
-       build-essential \
-       libpq-dev \
-    " \
-    && deps=" \
-       gdal-bin \
-       gettext \
-       postgis \
-       postgresql-client-$PG_MAJOR=$PG_VERSION \
-    " \
-    && apt-get update && apt-get install -y $buildDeps $deps --no-install-recommends \
-    && pip install --upgrade pip \
     && pip install --no-cache-dir -r /tmp/requirements.txt \
-    && apt-get purge -y --auto-remove $buildDeps \
-       $(! command -v gpg > /dev/null || echo 'gnupg dirmngr') \
-    && rm -rf /tmp/requirements.txt /var/lib/apt/lists/*
+    && rm -rf /tmp/requirements.txt
+
+RUN set -ex \
+    && pip install --no-cache-dir \
+        --force-reinstall -U --no-clean --src /usr/local/src \
+        --user \
+        -e git+git://github.com/flibbertigibbet/django.git@feature/add-null-layermapping-support#egg=Django
+
+RUN mkdir -p /usr/src
+COPY ./ /usr/src
+COPY ./test_postgis.py /usr/local/src/django
+WORKDIR /usr/src
 
 CMD ["--workers=4", \
      "--timeout=60", \

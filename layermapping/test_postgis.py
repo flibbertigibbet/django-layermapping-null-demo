@@ -7,17 +7,25 @@
 # database backends as possible.  You may want to create a separate settings
 # file for each of the backends you test against.
 
-import os
+# Cannot set via environment variables from .env because tox loses them
 
 DATABASES = {
     'default': {
         'ENGINE': 'django.contrib.gis.db.backends.postgis',
-        'NAME': os.getenv('POSTGRES_NAME'),
-        'USER': os.getenv('POSTGRES_USER'),
-        'PASSWORD': os.getenv('POSTGRES_PASSWORD'),
-        'HOST': os.getenv('POSTGRES_HOST'),
-        'PORT': os.getenv('POSTGRES_PORT')
+        'NAME': 'layermapping',
+        'USER': 'layermapping',
+        'PASSWORD': 'layermapping',
+        'HOST': 'database.service.layermapping.internal',
+        'PORT': 5444
+    },
+    'other': {
+        'ENGINE': 'django.contrib.gis.db.backends.postgis',
+        'NAME': 'layermapping',
+        'USER': 'layermapping',
+        'PASSWORD': 'layermapping',
+        'HOST': 'database.service.layermapping.internal',
+        'PORT': 5444
     },
 }
 
-SECRET_KEY = os.getenv('DJANGO_SECRET')
+SECRET_KEY = 'JUST_WORK_ALREADY'

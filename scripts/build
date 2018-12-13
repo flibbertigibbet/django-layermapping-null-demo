@@ -18,11 +18,6 @@ then
     else
         docker-compose build
 
-        # Install Django fork separately as workaround for requirements.txt install missing
-        docker-compose \
-            run --rm --entrypoint pip \
-            django install -e git+git://github.com/flibbertigibbet/django.git@feature/add-null-layermapping-support#egg=Django
-
         docker-compose up -d database django
 
         # migrations
