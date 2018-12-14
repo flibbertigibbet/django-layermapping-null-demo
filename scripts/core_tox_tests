@@ -6,7 +6,7 @@ function usage() {
     echo -n \
          "Usage: $(basename "$0")
 
-Run full tox test suite on Django core with PostGIS.
+Run full tox test suite on Django core with Spatialite.
 "
 }
 
@@ -16,15 +16,15 @@ then
     then
         usage
     else
-        docker-compose up -d database django
+        docker-compose up -d django
 
         # Django tests
-        echo "Running core Django tests via tox with PostGIS"
+        echo "Running core Django tests via tox with Spatialite"
         docker-compose \
             run --rm --entrypoint tox \
             -e TOX_WORK_DIR=/usr/local/src/django \
-            -e PYTHONPATH="${PYTHONPATH}:/usr/local/src/django/test_postgis.py:/usr/local/lib/python3.6/site-packages/" \
-            -e DJANGO_SETTINGS_MODULE='test_postgis' \
+            -e PYTHONPATH="${PYTHONPATH}:/usr/local/src/django/test_spatialite.py" \
+            -e DJANGO_SETTINGS_MODULE='test_spatialite' \
             -w /usr/local/src/django \
             django
         echo "Tests complete"

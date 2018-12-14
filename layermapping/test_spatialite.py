@@ -11,22 +11,17 @@
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.contrib.gis.db.backends.postgis',
-        'NAME': 'layermapping',
-        'USER': 'layermapping',
-        'PASSWORD': 'layermapping',
-        'HOST': 'database.service.layermapping.internal',
-        'PORT': 5444
+        'ENGINE': 'django.contrib.gis.db.backends.spatialite',
+        'NAME': '/usr/src/test_layermapping.db',
     },
     'other': {
-        'ENGINE': 'django.contrib.gis.db.backends.postgis',
-        'NAME': 'other',
-        'USER': 'layermapping',
-        'PASSWORD': 'layermapping',
-        'HOST': 'database.service.layermapping.internal',
-        'PORT': 5444
-    },
+        'ENGINE': 'django.contrib.gis.db.backends.spatialite',
+        'NAME': '/usr/src/test_other.db',
+    }
 }
+
+
+SPATIALITE_LIBRARY_PATH = 'mod_spatialite.so'
 
 SECRET_KEY = 'WHY_DO_TESTS_NEED_A_SECRET_KEY'
 

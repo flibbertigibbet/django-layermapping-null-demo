@@ -80,15 +80,12 @@ WSGI_APPLICATION = 'layermapping.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.contrib.gis.db.backends.postgis',
-        'NAME': os.getenv('POSTGRES_NAME'),
-        'USER': os.getenv('POSTGRES_USER'),
-        'PASSWORD': os.getenv('POSTGRES_PASSWORD'),
-        'HOST': os.getenv('POSTGRES_HOST'),
-        'PORT': os.getenv('POSTGRES_PORT')
+        'ENGINE': 'django.contrib.gis.db.backends.spatialite',
+        'NAME': '/usr/src/layermapping.db',
     },
 }
 
+SPATIALITE_LIBRARY_PATH = 'mod_spatialite.so'
 
 # Password validation
 # https://docs.djangoproject.com/en/1.11/ref/settings/#auth-password-validators

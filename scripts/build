@@ -18,7 +18,7 @@ then
     else
         docker-compose build
 
-        docker-compose up -d database django
+        docker-compose up -d django
 
         # migrations
         docker-compose \

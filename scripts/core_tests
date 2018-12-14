@@ -6,7 +6,7 @@ function usage() {
     echo -n \
          "Usage: $(basename "$0")
 
-Run python tests from Django core with PostGIS.
+Run python tests from Django core with Spatialite.
 "
 }
 
@@ -16,15 +16,15 @@ then
     then
         usage
     else
-        docker-compose up -d database django
+        docker-compose up -d django
 
         # Django tests
-        echo "Running core Django tests with PostGIS"
+        echo "Running core Django tests with Spatialite"
         docker-compose \
             run --rm --entrypoint python \
-            -e PYTHONPATH="${PYTHONPATH}:/usr/src/test_postgis.py" \
-            -e DJANGO_SETTINGS_MODULE='test_postgis' \
-            django /usr/local/src/django/tests/runtests.py --settings=test_postgis
+            -e PYTHONPATH="${PYTHONPATH}:/usr/src/test_spatialite.py" \
+            -e DJANGO_SETTINGS_MODULE='test_spatialite' \
+            django /usr/local/src/django/tests/runtests.py --settings=test_spatialite
         echo "Tests complete"
 
         docker-compose kill django \

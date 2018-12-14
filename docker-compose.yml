@@ -1,30 +1,13 @@
 version: '2.3'
 services:
-  database:
-    image: quay.io/azavea/postgis:2.4-postgres10.3-slim
-    env_file:
-      - ./.env
-    healthcheck:
-      test: ["CMD", "pg_isready", "-U", "layermapping"]
-      interval: 3s
-      timeout: 3s
-      retries: 3
-      start_period: 5s
-    ports:
-      - "5444:5444"
   django:
-    image: layermapping-app
+    image: layermapping-spatialite
     build:
       context: ./layermapping
       dockerfile: Dockerfile
-    depends_on:
-      database:
-        condition: service_healthy
     env_file:
       - ./.env
     ports:
       - "8112:8080"
-    links:
-      - database:database.service.layermapping.internal
     volumes:
       - ./layermapping:/usr/src

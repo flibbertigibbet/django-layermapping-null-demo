@@ -1,3 +1,6 @@
+# Sqlite DB
+layermapping/*.db
+
 # Pip install directory
 layermapping/src
 
