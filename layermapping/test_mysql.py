@@ -11,20 +11,20 @@
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.contrib.gis.db.backends.postgis',
+        'ENGINE': 'django.contrib.gis.db.backends.mysql',
         'NAME': 'layermapping',
         'USER': 'layermapping',
         'PASSWORD': 'layermapping',
         'HOST': 'database.service.layermapping.internal',
-        'PORT': 5444
+        'PORT': 3306,
     },
     'other': {
-        'ENGINE': 'django.contrib.gis.db.backends.postgis',
-        'NAME': 'other',
+        'ENGINE': 'django.contrib.gis.db.backends.mysql',
+        'NAME': 'layermapping',
         'USER': 'layermapping',
         'PASSWORD': 'layermapping',
         'HOST': 'database.service.layermapping.internal',
-        'PORT': 5444
+        'PORT': 3306,
     },
 }
 

@@ -6,7 +6,7 @@ function usage() {
     echo -n \
          "Usage: $(basename "$0")
 
-Run python tests from Django core with PostGIS.
+Run python tests from Django core with MySQL.
 "
 }
 
@@ -18,16 +18,23 @@ then
     else
         docker-compose up -d database django
 
+        # use client from django container to grant DB permissions
+        # needed to create test databases
+        docker-compose \
+            run --rm --entrypoint mysql \
+            django -hdatabase.service.layermapping.internal -uroot -playermappingroot \
+            -e "GRANT ALL ON *.* TO 'layermapping'; FLUSH PRIVILEGES;"
+
         # Django tests
-        echo "Running core Django tests with PostGIS"
+        echo "Running core Django tests with MySQL"
         docker-compose \
             run --rm --entrypoint python \
-            -e PYTHONPATH="${PYTHONPATH}:/usr/src/test_postgis.py" \
-            -e DJANGO_SETTINGS_MODULE='test_postgis' \
-            django /usr/local/src/django/tests/runtests.py --settings=test_postgis
+            -e PYTHONPATH="${PYTHONPATH}:/usr/src/test_mysql.py" \
+            -e DJANGO_SETTINGS_MODULE='test_mysql' \
+            django /usr/local/src/django/tests/runtests.py --settings=test_mysql
         echo "Tests complete"
 
-        docker-compose kill django \
-            && docker-compose rm -f django
+        docker-compose kill django database \
+            && docker-compose rm -f django database
     fi
 fi

@@ -6,7 +6,7 @@ function usage() {
     echo -n \
          "Usage: $(basename "$0")
 
-Run full tox test suite on Django core with PostGIS.
+Run full tox test suite on Django core with MySQL.
 "
 }
 
@@ -18,18 +18,25 @@ then
     else
         docker-compose up -d database django
 
+        # use client from django container to grant DB permissions
+        # needed to create test databases
+        docker-compose \
+            run --rm --entrypoint mysql \
+            django -hdatabase.service.layermapping.internal -uroot -playermappingroot \
+            -e "GRANT ALL ON *.* TO 'layermapping'; FLUSH PRIVILEGES;"
+
         # Django tests
-        echo "Running core Django tests via tox with PostGIS"
+        echo "Running core Django tests via tox with MySQL"
         docker-compose \
             run --rm --entrypoint tox \
             -e TOX_WORK_DIR=/usr/local/src/django \
-            -e PYTHONPATH="${PYTHONPATH}:/usr/local/src/django/test_postgis.py:/usr/local/lib/python3.6/site-packages/" \
-            -e DJANGO_SETTINGS_MODULE='test_postgis' \
+            -e PYTHONPATH="${PYTHONPATH}:/usr/local/src/django/test_mysql.py" \
+            -e DJANGO_SETTINGS_MODULE='test_mysql' \
             -w /usr/local/src/django \
             django
         echo "Tests complete"
 
-        docker-compose kill django \
-            && docker-compose rm -f django
+        docker-compose kill database django \
+            && docker-compose rm -f database django
     fi
 fi

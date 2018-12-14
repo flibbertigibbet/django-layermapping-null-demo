@@ -1,31 +1,5 @@
 FROM ubuntu:bionic
 
-ENV PG_MAJOR 10
-
-RUN set -ex; \
-  if ! command -v gpg > /dev/null; then \
-    apt-get update; \
-    apt-get install -y --no-install-recommends \
-      dirmngr \
-      gnupg \
-    ; \
-  fi
-
-RUN set -ex; \
-# pub   4096R/ACCC4CF8 2011-10-13 [expires: 2019-07-02]
-#       Key fingerprint = B97B 0AFC AA1A 47F0 44F2  44A0 7FCC 7D46 ACCC 4CF8
-# uid                  PostgreSQL Debian Repository
-	key='B97B0AFCAA1A47F044F244A07FCC7D46ACCC4CF8'; \
-	export GNUPGHOME="$(mktemp -d)"; \
-  ( gpg --keyserver hkp://ipv4.pool.sks-keyservers.net --no-tty --recv-keys "$key" \
-  || gpg --keyserver hkp://p80.pool.sks-keyservers.net:80 --no-tty --recv-keys "$key" \
-  || gpg --keyserver keyserver.pgp.com --no-tty --recv-keys "$key" ); \
-	gpg --batch --export "$key" > /etc/apt/trusted.gpg.d/postgres.gpg; \
-	rm -rf "$GNUPGHOME"; \
-	apt-key list
-
-RUN echo "deb http://apt.postgresql.org/pub/repos/apt/ bionic-pgdg main $PG_MAJOR" > /etc/apt/sources.list.d/pgdg.list
-
 RUN set -ex; \
     apt-get update; \
     apt-get install -y --no-install-recommends \
@@ -35,8 +9,8 @@ RUN set -ex; \
       git \
       gdal-bin \
       gettext \
-      postgis \
-      postgresql-client-$PG_MAJOR \
+      default-libmysqlclient-dev \
+      default-mysql-client \
       python-dev \
       python-pip \
       python-setuptools \
@@ -55,11 +29,12 @@ RUN set -ex \
         -e git+git://github.com/flibbertigibbet/django.git@feature/add-null-layermapping-support#egg=Django
 
 RUN set -ex \
-    && pip install --no-cache-dir -r /usr/local/src/django/tests/requirements/py2.txt
+    && pip install --no-cache-dir -r /usr/local/src/django/tests/requirements/py2.txt \
+    && pip install --no-cache-dir -r /usr/local/src/django/tests/requirements/mysql.txt
 
 RUN mkdir -p /usr/src
 COPY ./ /usr/src
-COPY ./test_postgis.py /usr/local/src/django
+COPY ./test_mysql.py /usr/local/src/django
 WORKDIR /usr/src
 
 CMD ["--workers=4", \

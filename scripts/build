@@ -30,7 +30,14 @@ then
             run --rm --entrypoint python \
             django manage.py collectstatic --noinput
 
-        docker-compose kill django \
-            && docker-compose rm -f django
+        # use client from django container to grant DB permissions
+        # needed to create test databases
+        docker-compose \
+            run --rm --entrypoint mysql \
+            django -hdatabase.service.layermapping.internal -uroot -playermappingroot \
+            -e "GRANT ALL ON *.* TO 'layermapping'; FLUSH PRIVILEGES;"
+
+        docker-compose kill database django \
+            && docker-compose rm -f database django
     fi
 fi

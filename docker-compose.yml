@@ -1,17 +1,17 @@
 version: '2.3'
 services:
   database:
-    image: quay.io/azavea/postgis:2.4-postgres10.3-slim
+    image: mysql/mysql-server
     env_file:
       - ./.env
     healthcheck:
-      test: ["CMD", "pg_isready", "-U", "layermapping"]
+      test: ["CMD", "mysqladmin" ,"ping", "-h", "localhost"]
       interval: 3s
       timeout: 3s
-      retries: 3
+      retries: 10
       start_period: 5s
     ports:
-      - "5444:5444"
+      - "3306:3306"
   django:
     image: layermapping-app
     build:

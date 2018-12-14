@@ -1,5 +1,5 @@
 gunicorn
-psycopg2-binary
+mysqlclient
 gevent
 django-extensions
 flake8

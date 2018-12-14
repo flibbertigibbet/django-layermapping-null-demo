@@ -18,6 +18,13 @@ then
     else
         docker-compose up -d database django
 
+        # use client from django container to grant DB permissions
+        # needed to create test databases
+        docker-compose \
+            run --rm --entrypoint mysql \
+            django -hdatabase.service.layermapping.internal -uroot -playermappingroot \
+            -e "GRANT ALL ON *.* TO 'layermapping'; FLUSH PRIVILEGES;"
+
         # Django tests
         echo "Running tests"
         docker-compose \
@@ -31,7 +38,7 @@ then
             run --rm --entrypoint flake8 django
         echo "Linting complete"
 
-        docker-compose kill django \
-            && docker-compose rm -f django
+        docker-compose kill database django \
+            && docker-compose rm -f database django
     fi
 fi
