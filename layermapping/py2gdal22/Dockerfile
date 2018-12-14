@@ -1,4 +1,4 @@
-FROM python:3.6-slim-stretch
+FROM ubuntu:bionic
 
 RUN set -ex; \
     apt-get update; \
@@ -11,12 +11,18 @@ RUN set -ex; \
       gettext \
       libproj-dev \
       sqlite3 \
+      python-dev \
+      python-pip \
+      python-setuptools \
       python-gdal \
       libspatialite-dev \
       spatialite-bin \
       libsqlite3-mod-spatialite \
     ; \
     rm -rf /var/lib/apt/lists/*;
+
+RUN set -ex; \
+    pip install --upgrade pip
 
 COPY requirements.txt /tmp
 RUN set -ex \
@@ -30,7 +36,7 @@ RUN set -ex \
         -e git+git://github.com/flibbertigibbet/django.git@feature/add-null-layermapping-support#egg=Django
 
 RUN set -ex \
-    && pip install --no-cache-dir -r /usr/local/src/django/tests/requirements/py3.txt
+    && pip install --no-cache-dir -r /usr/local/src/django/tests/requirements/py2.txt
 
 RUN mkdir -p /usr/src
 COPY ./ /usr/src
