@@ -1,4 +1,4 @@
-FROM ubuntu:bionic
+FROM python:3.6-slim-stretch
 
 ENV PG_MAJOR 10
 
@@ -24,7 +24,7 @@ RUN set -ex; \
 	rm -rf "$GNUPGHOME"; \
 	apt-key list
 
-RUN echo "deb http://apt.postgresql.org/pub/repos/apt/ bionic-pgdg main $PG_MAJOR" > /etc/apt/sources.list.d/pgdg.list
+RUN echo "deb http://apt.postgresql.org/pub/repos/apt/ stretch-pgdg main $PG_MAJOR" > /etc/apt/sources.list.d/pgdg.list
 
 RUN set -ex; \
     apt-get update; \
@@ -37,9 +37,6 @@ RUN set -ex; \
       gettext \
       postgis \
       postgresql-client-$PG_MAJOR \
-      python-dev \
-      python-pip \
-      python-setuptools \
     ; \
     rm -rf /var/lib/apt/lists/*;
 
@@ -52,10 +49,10 @@ RUN set -ex \
     && pip install --no-cache-dir \
         --force-reinstall -U --no-clean --src /usr/local/src \
         --user \
-        -e git+git://github.com/flibbertigibbet/django.git@feature/add-null-layermapping-support#egg=Django
+        -e git+git://github.com/flibbertigibbet/django.git@feature/add-null-layermapping-support-master#egg=Django
 
 RUN set -ex \
-    && pip install --no-cache-dir -r /usr/local/src/django/tests/requirements/py2.txt
+    && pip install --no-cache-dir -r /usr/local/src/django/tests/requirements/py3.txt
 
 RUN mkdir -p /usr/src
 COPY ./ /usr/src
