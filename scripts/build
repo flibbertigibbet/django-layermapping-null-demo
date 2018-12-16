@@ -20,6 +20,16 @@ then
 
         docker-compose up -d database django
 
+        sleep 2
+
+        # Cannot connect to mysql server via docker-compose.
+        # Use client from django container to grant DB permissions
+        # needed to create test databases
+        docker exec -it mysql mysql -uroot -playermappingroot -hlocalhost \
+            -e "GRANT ALL ON *.* TO 'layermapping'; FLUSH PRIVILEGES;"
+
+        sleep 2
+
         # migrations
         docker-compose \
             run --rm --entrypoint python \
@@ -29,13 +39,6 @@ then
         docker-compose \
             run --rm --entrypoint python \
             django manage.py collectstatic --noinput
-
-        # use client from django container to grant DB permissions
-        # needed to create test databases
-        docker-compose \
-            run --rm --entrypoint mysql \
-            django -hdatabase.service.layermapping.internal -uroot -playermappingroot \
-            -e "GRANT ALL ON *.* TO 'layermapping'; FLUSH PRIVILEGES;"
 
         docker-compose kill database django \
             && docker-compose rm -f database django

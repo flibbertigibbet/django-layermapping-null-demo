@@ -18,12 +18,14 @@ then
     else
         docker-compose up -d database django
 
+        sleep 2
+
         # use client from django container to grant DB permissions
         # needed to create test databases
-        docker-compose \
-            run --rm --entrypoint mysql \
-            django -hdatabase.service.layermapping.internal -uroot -playermappingroot \
+        docker exec -it mysql mysql -uroot -playermappingroot -hlocalhost \
             -e "GRANT ALL ON *.* TO 'layermapping'; FLUSH PRIVILEGES;"
+
+        sleep 2
 
         # Django tests
         echo "Running core Django tests for gis_tests module with MySQL"

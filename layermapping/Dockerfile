@@ -1,4 +1,4 @@
-FROM ubuntu:bionic
+FROM python:3.6-slim-stretch
 
 RUN set -ex; \
     apt-get update; \
@@ -11,9 +11,6 @@ RUN set -ex; \
       gettext \
       default-libmysqlclient-dev \
       default-mysql-client \
-      python-dev \
-      python-pip \
-      python-setuptools \
     ; \
     rm -rf /var/lib/apt/lists/*;
 
@@ -26,10 +23,10 @@ RUN set -ex \
     && pip install --no-cache-dir \
         --force-reinstall -U --no-clean --src /usr/local/src \
         --user \
-        -e git+git://github.com/flibbertigibbet/django.git@feature/add-null-layermapping-support#egg=Django
+        -e git+git://github.com/flibbertigibbet/django.git@feature/add-null-layermapping-support-master#egg=Django
 
 RUN set -ex \
-    && pip install --no-cache-dir -r /usr/local/src/django/tests/requirements/py2.txt \
+    && pip install --no-cache-dir -r /usr/local/src/django/tests/requirements/py3.txt \
     && pip install --no-cache-dir -r /usr/local/src/django/tests/requirements/mysql.txt
 
 RUN mkdir -p /usr/src
