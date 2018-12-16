@@ -27,7 +27,7 @@ RUN set -ex \
     && pip install --no-cache-dir \
         --force-reinstall -U --no-clean --src /usr/local/src \
         --user \
-        -e git+git://github.com/flibbertigibbet/django.git@feature/add-null-layermapping-support#egg=Django
+        -e git+git://github.com/flibbertigibbet/django.git@feature/add-null-layermapping-support-master#egg=Django
 
 RUN set -ex \
     && pip install --no-cache-dir -r /usr/local/src/django/tests/requirements/py3.txt
