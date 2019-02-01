@@ -2,5 +2,5 @@
 
 set -e
 
-docker-compose exec django python manage.py "${@}"
+docker-compose exec django python3 manage.py "${@}"
 

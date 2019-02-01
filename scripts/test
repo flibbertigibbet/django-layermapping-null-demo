@@ -21,7 +21,7 @@ then
         # Django tests
         echo "Running tests"
         docker-compose \
-            run --rm --entrypoint python \
+            run --rm --entrypoint python3 \
             django manage.py test
         echo "Tests complete"
 

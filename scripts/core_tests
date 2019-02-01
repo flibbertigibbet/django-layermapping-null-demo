@@ -21,7 +21,7 @@ then
         # Django tests
         echo "Running core Django tests with PostGIS"
         docker-compose \
-            run --rm --entrypoint python \
+            run --rm --entrypoint python3 \
             -e PYTHONPATH="${PYTHONPATH}:/usr/src/test_postgis.py" \
             -e DJANGO_SETTINGS_MODULE='test_postgis' \
             django /usr/local/src/django/tests/runtests.py --settings=test_postgis

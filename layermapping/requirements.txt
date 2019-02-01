@@ -4,6 +4,6 @@ gevent
 django-extensions
 flake8
 ipdb
-ipython
+ipython==5
 tblib
 tox

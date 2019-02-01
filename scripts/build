@@ -22,12 +22,12 @@ then
 
         # migrations
         docker-compose \
-            run --rm --entrypoint python \
+            run --rm --entrypoint python3 \
             django manage.py migrate --noinput
 
         # collectstatic
         docker-compose \
-            run --rm --entrypoint python \
+            run --rm --entrypoint python3 \
             django manage.py collectstatic --noinput
 
         docker-compose kill django \
